@@ -18,6 +18,7 @@ struct Game {
     var count = 0
     var crossIsWinner = false
     var circleIsWinner = false
+    var alertMessage = ""
     
     //this dictionary stores four arrays of x and y values for coordinates.
     var coordinates : [String : [Int]] = [
@@ -32,6 +33,7 @@ struct Game {
     mutating func checkCrossWinner() {
         if count == 3 {
             print("Cross is the winner!")
+            alertMessage = "Cross is the winner!"
             numOfCrossWins += 1
             crossIsWinner = true
         }
@@ -41,6 +43,7 @@ struct Game {
     mutating func checkCircleWinner() {
         if count == 3 {
             print("Circle is the winner!")
+            alertMessage = "Circle is the winner!"
             numOfCircleWins += 1
             circleIsWinner = true
         }

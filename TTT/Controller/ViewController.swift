@@ -54,23 +54,9 @@ class ViewController: UIViewController {
             }
         }
         
-        if game.numOfClicks == 1 {
-            switchButton.isHidden = true
-        }
-        
         print(game.coordinates)
         game.checkWinner()
         updateGame()
-    }
-    
-    
-    @IBOutlet weak var switchButton: UIButton!
-    @IBAction func switchTurns(_ sender: UIButton) {
-        if game.isCross == false {
-            game.isCross = true
-        } else {
-            game.isCross = false
-        }
     }
     
     
@@ -78,46 +64,74 @@ class ViewController: UIViewController {
     @IBOutlet weak var crossScore: UILabel!
     @IBOutlet weak var circleScore: UILabel!
     
-    @IBOutlet weak var resetButton: UIButton!
-    @IBAction func resetGame(_ sender: UIButton) {
-        //reset everything
-        for button in buttonsPressed {
-            button.setBackgroundImage(UIImage(named: "blank"), for: .normal)
-            
-                game.numOfClicks = 0
-                game.index = 0
-                game.count = 0
-                game.crossIsWinner = false
-                game.circleIsWinner = false
-                game.coordinates = [
-                "crossX" : [Int](),
-                "crossY" : [Int](),
-                "circleX" : [Int](),
-                "circleY" : [Int]()]
-                resetButton.isHidden = true
-                switchButton.isHidden = false
-                button.isEnabled = true
-            
-        }
-    }
-    
     //update the scores for cross and circle players
     func updateGame() {
         
         //if there's a win
         if game.crossIsWinner == true || game.circleIsWinner == true {
-            resetButton.isHidden = false
             crossScore.text = ": \(game.numOfCrossWins)"
             circleScore.text = ": \(game.numOfCircleWins)"
+            for button in buttonsPressed {
+                button.isEnabled = false
+            }
+            
         }
         
         //if it's a tie
-        if game.numOfClicks == 9 {
+        if game.numOfClicks == 9 && game.crossIsWinner == false && game.circleIsWinner == false {
+            game.alertMessage = "It's a tie!"
             if game.crossIsWinner == false || game.circleIsWinner == false {
-                resetButton.isHidden = false
+                for button in buttonsPressed {
+                    button.isEnabled = false
+                }
             }
         }
         
+        if game.crossIsWinner == true || game.circleIsWinner == true || game.numOfClicks == 9 {
+            print(game.alertMessage)
+            //if game ends, alert
+            let alert = UIAlertController(title: game.alertMessage, message: "", preferredStyle: .alert)
+            let restartAction = UIAlertAction(title: "Keep playing", style: .default, handler: {(UIAlertAction) in
+                self.resetGame()
+            })
+            
+            let switchTurnAction = UIAlertAction(title: "Switch Turns", style: .default, handler: {(UIAlertAction) in
+                if self.game.isCross == false {
+                    self.game.isCross = true
+                } else {
+                    self.game.isCross = false
+                }
+                self.resetGame()
+            })
+            
+            alert.addAction(restartAction)
+            alert.addAction(switchTurnAction)
+            
+            present(alert, animated: true, completion: nil)
+            
+        }
+        
+        
+        
+    }
+    
+    func resetGame() {
+        for button in self.buttonsPressed {
+            button.setBackgroundImage(UIImage(named: "blank"), for: .normal)
+            
+            self.game.numOfClicks = 0
+            self.game.index = 0
+            self.game.count = 0
+            self.game.crossIsWinner = false
+            self.game.circleIsWinner = false
+            self.game.coordinates = [
+                "crossX" : [Int](),
+                "crossY" : [Int](),
+                "circleX" : [Int](),
+                "circleY" : [Int]()]
+            button.isEnabled = true
+            
+        }
     }
     
 }
